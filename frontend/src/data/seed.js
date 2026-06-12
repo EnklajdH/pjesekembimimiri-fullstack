@@ -1,0 +1,99 @@
+export const seedCategories = [
+  { id: 1, name: 'Karroceria', parentId: null },
+  { id: 2, name: 'Parakolp', parentId: 1 },
+  { id: 3, name: 'Fener', parentId: 1 },
+  { id: 4, name: 'Pasqyra', parentId: 1 },
+  { id: 5, name: 'Motorri', parentId: null },
+  { id: 6, name: 'Turbina', parentId: 5 },
+  { id: 7, name: 'Frena', parentId: null },
+  { id: 8, name: 'Disqe Frenash', parentId: 7 },
+  { id: 9, name: 'Filtra', parentId: null },
+  { id: 10, name: 'Elektrike', parentId: null },
+  { id: 11, name: 'Amortizimi', parentId: null },
+  { id: 12, name: 'Kambio', parentId: null },
+  { id: 13, name: 'Interior', parentId: null }
+];
+
+export const carModels = [
+  'C-Class W203', 'C-Class W204', 'C-Class W205',
+  'E-Class W211', 'E-Class W212', 'E-Class W213',
+  'ML-Class', 'GLK-Class'
+];
+
+export const seedProducts = [
+  {
+    id: 1,
+    title: 'Parakolp para Mercedes C-Class W204',
+    categoryId: 2,
+    model: 'C-Class W204',
+    price: 180,
+    currency: 'EUR',
+    stock: 1,
+    condition: 'E përdorur origjinale',
+    origin: 'Gjermani',
+    oem: 'A2048800140',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80',
+    description: 'Parakolp para origjinal për Mercedes C-Class W204, i përdorur, i ardhur nga Gjermania.'
+  },
+  {
+    id: 2,
+    title: 'Fener Mercedes C-Class W205',
+    categoryId: 3,
+    model: 'C-Class W205',
+    price: 240,
+    currency: 'EUR',
+    stock: 2,
+    condition: 'E përdorur origjinale',
+    origin: 'Gjermani',
+    oem: 'A2059067602',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1617814076668-5bb4c9e1f628?auto=format&fit=crop&w=900&q=80',
+    description: 'Fener origjinal për Mercedes C-Class W205. Gjendje shumë e mirë.'
+  },
+  {
+    id: 3,
+    title: 'Pasqyrë anësore Mercedes E-Class W212',
+    categoryId: 4,
+    model: 'E-Class W212',
+    price: 120,
+    currency: 'EUR',
+    stock: 1,
+    condition: 'E përdorur origjinale',
+    origin: 'Gjermani',
+    oem: 'A2128100476',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80',
+    description: 'Pasqyrë anësore origjinale për Mercedes E-Class W212.'
+  },
+  {
+    id: 4,
+    title: 'Turbine Mercedes ML-Class',
+    categoryId: 6,
+    model: 'ML-Class',
+    price: 320,
+    currency: 'EUR',
+    stock: 1,
+    condition: 'E përdorur origjinale',
+    origin: 'Gjermani',
+    oem: 'OEM-ML-TURBO',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=900&q=80',
+    description: 'Turbine origjinale e përdorur për Mercedes ML-Class, import nga Gjermania.'
+  },
+  {
+    id: 5,
+    title: 'Disqe frenash Mercedes E-Class W213',
+    categoryId: 8,
+    model: 'E-Class W213',
+    price: 15000,
+    currency: 'ALL',
+    stock: 4,
+    condition: 'E përdorur, gjendje e mirë',
+    origin: 'Gjermani',
+    oem: 'OEM-W213-BRAKE',
+    status: 'active',
+    image: 'https://images.unsplash.com/photo-1607860108855-64acf2078ed9?auto=format&fit=crop&w=900&q=80',
+    description: 'Set disqesh frenash për Mercedes E-Class W213.'
+  }
+];

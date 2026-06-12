@@ -1,0 +1,3 @@
+import { useNavigate } from 'react-router-dom';
+function AdminLogin() { const navigate = useNavigate(); return <div className="max-w-md mx-auto px-4 py-20"><div className="bg-white rounded-2xl shadow p-8"><h1 className="text-3xl font-bold mb-6 text-center">Admin Login</h1><p className="text-gray-500 text-center mb-5">Demo: admin@demo.com / admin123</p><div className="space-y-4"><input type="email" placeholder="Email" className="w-full border px-4 py-3 rounded-lg"/><input type="password" placeholder="Password" className="w-full border px-4 py-3 rounded-lg"/><button onClick={()=>navigate('/admin/dashboard')} className="w-full bg-black text-white py-4 rounded-lg font-bold hover:bg-red-600">Login</button></div></div></div>; }
+export default AdminLogin;
