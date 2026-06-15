@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -79,7 +80,7 @@ class ProductController extends Controller
         $imagePath = $data['image'] ?? null;
 
         if ($request->hasFile('image_file')) {
-            $imagePath = $request->file('image_file')->store('products', 'public');
+            $imagePath = $this->uploadImageToCloudinary($request->file('image_file'));
         }
 
         $product = Product::create([
@@ -129,7 +130,7 @@ class ProductController extends Controller
         $imagePath = $data['image'] ?? $product->image;
 
         if ($request->hasFile('image_file')) {
-            $imagePath = $request->file('image_file')->store('products', 'public');
+            $imagePath = $this->uploadImageToCloudinary($request->file('image_file'));
         }
 
         $product->update([
@@ -165,6 +166,30 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Product deleted successfully.',
         ]);
+    }
+
+    private function uploadImageToCloudinary($file): string
+    {
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                'api_key' => env('CLOUDINARY_API_KEY'),
+                'api_secret' => env('CLOUDINARY_API_SECRET'),
+            ],
+            'url' => [
+                'secure' => true,
+            ],
+        ]);
+
+        $uploadedFile = $cloudinary->uploadApi()->upload(
+            $file->getRealPath(),
+            [
+                'folder' => 'pjesekembimimiri/products',
+                'resource_type' => 'image',
+            ]
+        );
+
+        return $uploadedFile['secure_url'];
     }
 
     private function makeUniqueSlug(string $title, ?int $ignoreId = null): string
