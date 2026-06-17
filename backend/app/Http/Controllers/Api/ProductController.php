@@ -73,7 +73,7 @@ class ProductController extends Controller
             'oem' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:active,hidden,sold'],
             'image' => ['nullable', 'string'],
-            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -123,7 +123,7 @@ class ProductController extends Controller
             'oem' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:active,hidden,sold'],
             'image' => ['nullable', 'string'],
-            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image_file' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
             'description' => ['nullable', 'string'],
         ]);
 
