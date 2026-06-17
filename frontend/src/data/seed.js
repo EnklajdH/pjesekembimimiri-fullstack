@@ -15,9 +15,23 @@ export const seedCategories = [
 ];
 
 export const carModels = [
-  'C-Class W203', 'C-Class W204', 'C-Class W205',
-  'E-Class W211', 'E-Class W212', 'E-Class W213',
-  'ML-Class', 'GLK-Class'
+  "A-Class W168",
+  "A-Class W169",
+  "B-Class W245",
+  "B-Class W246",
+  "C-Class W203",
+  "C-Class W204",
+  "C-Class W205",
+  "E-Class W211",
+  "E-Class W212",
+  "E-Class W213",
+  "CLK W209",
+  "CLS W219",
+  "CLS W218",
+  "ML W163",
+  "ML W164",
+  "ML W166",
+  "GLK X204",
 ];
 
 export const seedProducts = [

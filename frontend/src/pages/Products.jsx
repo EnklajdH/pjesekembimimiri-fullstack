@@ -100,14 +100,23 @@ function Products() {
                 onChange={(e) => setSelectedModel(e.target.value)}
               >
                 <option value="">Të gjitha</option>
+                <option value="A-Class W168">A-Class W168</option>
+                <option value="A-Class W169">A-Class W169</option>
+                <option value="B-Class W245">B-Class W245</option>
+                <option value="B-Class W246">B-Class W246</option>
                 <option value="C-Class W203">C-Class W203</option>
                 <option value="C-Class W204">C-Class W204</option>
                 <option value="C-Class W205">C-Class W205</option>
                 <option value="E-Class W211">E-Class W211</option>
                 <option value="E-Class W212">E-Class W212</option>
                 <option value="E-Class W213">E-Class W213</option>
-                <option value="ML-Class">ML-Class</option>
-                <option value="GLK-Class">GLK-Class</option>
+                <option value="CLK W209">CLK W209</option>
+                <option value="CLS W219">CLS W219</option>
+                <option value="CLS W218">CLS W218</option>
+                <option value="ML W163">ML W163</option>
+                <option value="ML W164">ML W164</option>
+                <option value="ML W166">ML W166</option>
+                <option value="GLK X204">GLK X204</option>
               </select>
             </div>
 
