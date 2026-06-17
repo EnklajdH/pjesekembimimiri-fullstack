@@ -40,7 +40,7 @@ function Home() {
 
             <p className="text-gray-200 text-base sm:text-lg mb-8 leading-relaxed max-w-2xl">
               Gjithmonë pjesë këmbimi origjinale të përdorura nga Gjermania.
-              Për C-Class, E-Class, ML dhe GLK.
+              Për modelet Mercedes-Benz A-Class, B-Class, C-Class, E-Class, CLK, CLS, ML dhe GLK.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
