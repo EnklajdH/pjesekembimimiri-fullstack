@@ -37,7 +37,7 @@ function AdminProductForm() {
   async function loadInitialData() {
     try {
       const categoriesResponse = await api.get("/categories");
-      setCategories(categoriesResponse.data.categories || []);
+      setCategories(categoriesResponse.data.categories);
 
       if (id) {
         const productsResponse = await api.get("/admin/products");
@@ -79,23 +79,105 @@ function AdminProductForm() {
     }));
   }
 
-  function handleImageUpload(e) {
+  function compressImage(file, maxWidth = 1600, quality = 0.75) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith("image/")) {
+        reject(new Error("Ju lutem zgjidhni vetëm foto."));
+        return;
+      }
+
+      const reader = new FileReader();
+      const img = new Image();
+
+      reader.onload = (event) => {
+        img.src = event.target.result;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error("Foto nuk u kompresua."));
+              return;
+            }
+
+            const compressedFile = new File(
+              [blob],
+              file.name.replace(/\.[^/.]+$/, "") + ".jpg",
+              {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              }
+            );
+
+            resolve(compressedFile);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+
+      img.onerror = () => {
+        reject(
+          new Error(
+            "Foto nuk mund të lexohet. Provo ta ruash si JPG ose fik HEIC/High Efficiency në kamerë."
+          )
+        );
+      };
+
+      reader.onerror = () => {
+        reject(new Error("Foto nuk mund të lexohet."));
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleImageUpload(e) {
     const file = e.target.files[0];
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("Ju lutem zgjidhni vetëm file imazhi.");
-      return;
+    try {
+      const compressedFile = await compressImage(file);
+
+      const maxSize = 20 * 1024 * 1024;
+
+      if (compressedFile.size > maxSize) {
+        alert(
+          "Foto është shumë e madhe edhe pas kompresimit. Zgjidh një foto më të vogël."
+        );
+        e.target.value = "";
+        return;
+      }
+
+      const previewUrl = URL.createObjectURL(compressedFile);
+
+      setForm((prev) => ({
+        ...prev,
+        image_file: compressedFile,
+        image: previewUrl,
+      }));
+    } catch (error) {
+      alert(error.message || "Foto nuk u përpunua. Provo një foto tjetër.");
+      e.target.value = "";
     }
-
-    const previewUrl = URL.createObjectURL(file);
-
-    setForm((prev) => ({
-      ...prev,
-      image_file: file,
-      image: previewUrl,
-    }));
   }
 
   async function submit(e) {
@@ -160,223 +242,215 @@ function AdminProductForm() {
 
   return (
     <AdminLayout>
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold">
-          {id ? "Edito pjesë" : "Shto pjesë"}
-        </h1>
-
-        <p className="text-gray-600 mt-2">
-          Plotëso të dhënat e pjesës dhe ngarko foton e produktit.
-        </p>
-      </div>
+      <h1 className="text-4xl font-bold mb-8">
+        {id ? "Edito pjesë" : "Shto pjesë"}
+      </h1>
 
       <form
         onSubmit={submit}
-        className="bg-white rounded-2xl shadow p-5 sm:p-6 md:p-8"
+        className="bg-white rounded-2xl shadow p-8 grid md:grid-cols-2 gap-5"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="md:col-span-2">
-            <label className="font-bold">Titulli</label>
-            <input
-              name="title"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              placeholder="P.sh. Parakolp para Mercedes C-Class W204"
-              value={form.title}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="md:col-span-2">
+          <label className="font-bold">Titulli</label>
+          <input
+            name="title"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            placeholder="P.sh. Parakolp para Mercedes C-Class W204"
+            value={form.title}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div>
-            <label className="font-bold">Kategoria</label>
-            <select
-              name="category_id"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.category_id}
-              onChange={handleChange}
-            >
-              <option value="">Zgjidh kategori</option>
+        <div>
+          <label className="font-bold">Kategoria</label>
+          <select
+            name="category_id"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.category_id}
+            onChange={handleChange}
+          >
+            <option value="">Zgjidh kategori</option>
 
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.parent_id ? "— " : ""}
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.parent_id ? "— " : ""}
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <div>
-            <label className="font-bold">Modeli</label>
-            <select
-              name="model"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.model}
-              onChange={handleChange}
-            >
-              {carModels.map((model) => (
-                <option key={model}>{model}</option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label className="font-bold">Modeli</label>
+          <select
+            name="model"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.model}
+            onChange={handleChange}
+          >
+            {carModels.map((model) => (
+              <option key={model}>{model}</option>
+            ))}
+          </select>
+        </div>
 
-          <div>
-            <label className="font-bold">Çmimi</label>
-            <input
-              name="price"
-              type="number"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.price}
-              onChange={handleChange}
-            />
-          </div>
+        <div>
+          <label className="font-bold">Çmimi</label>
+          <input
+            name="price"
+            type="number"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.price}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div>
-            <label className="font-bold">Monedha</label>
-            <select
-              name="currency"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.currency}
-              onChange={handleChange}
-            >
-              <option>EUR</option>
-              <option>ALL</option>
-            </select>
-          </div>
+        <div>
+          <label className="font-bold">Monedha</label>
+          <select
+            name="currency"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.currency}
+            onChange={handleChange}
+          >
+            <option>EUR</option>
+            <option>ALL</option>
+          </select>
+        </div>
 
-          <div>
-            <label className="font-bold">Stoku</label>
-            <input
-              name="stock"
-              type="number"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.stock}
-              onChange={handleChange}
-            />
-          </div>
+        <div>
+          <label className="font-bold">Stoku</label>
+          <input
+            name="stock"
+            type="number"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.stock}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div>
-            <label className="font-bold">Statusi</label>
-            <select
-              name="status"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.status}
-              onChange={handleChange}
-            >
-              <option value="active">active</option>
-              <option value="hidden">hidden</option>
-              <option value="sold">sold</option>
-            </select>
-          </div>
+        <div>
+          <label className="font-bold">Statusi</label>
+          <select
+            name="status"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.status}
+            onChange={handleChange}
+          >
+            <option value="active">active</option>
+            <option value="hidden">hidden</option>
+            <option value="sold">sold</option>
+          </select>
+        </div>
 
-          <div>
-            <label className="font-bold">Gjendja</label>
-            <input
-              name="condition"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.condition}
-              onChange={handleChange}
-            />
-          </div>
+        <div>
+          <label className="font-bold">Gjendja</label>
+          <input
+            name="condition"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.condition}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div>
-            <label className="font-bold">Origjina</label>
-            <input
-              name="origin"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.origin}
-              onChange={handleChange}
-            />
-          </div>
+        <div>
+          <label className="font-bold">Origjina</label>
+          <input
+            name="origin"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.origin}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div>
-            <label className="font-bold">Kodi OEM</label>
-            <input
-              name="oem"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              value={form.oem}
-              onChange={handleChange}
-            />
-          </div>
+        <div>
+          <label className="font-bold">Kodi OEM</label>
+          <input
+            name="oem"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            value={form.oem}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div className="md:col-span-2">
-            <label className="font-bold">Foto e produktit</label>
+        <div className="md:col-span-2">
+          <label className="font-bold">Foto e produktit</label>
 
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border px-4 py-3 rounded-lg mt-2"
-              onChange={handleImageUpload}
-            />
+          <input
+            type="file"
+            accept="image/*"
+            className="w-full border px-4 py-3 rounded-lg mt-2"
+            onChange={handleImageUpload}
+          />
 
-            <p className="text-center text-gray-400 my-3">ose</p>
+          <p className="text-center text-gray-400 my-3">ose</p>
 
-            <input
-              name="image"
-              className="w-full border px-4 py-3 rounded-lg"
-              placeholder="Vendos URL të fotos: https://..."
-              value={form.image.startsWith("blob:") ? "" : form.image}
-              onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  image: e.target.value,
-                  image_file: null,
-                }))
-              }
-            />
+          <input
+            name="image"
+            className="w-full border px-4 py-3 rounded-lg"
+            placeholder="Vendos URL të fotos: https://..."
+            value={form.image.startsWith("blob:") ? "" : form.image}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                image: e.target.value,
+                image_file: null,
+              }))
+            }
+          />
 
-            {form.image && (
-              <div className="mt-5">
-                <p className="text-sm font-bold mb-2">Preview foto:</p>
+          {form.image && (
+            <div className="mt-5">
+              <p className="text-sm font-bold mb-2">Preview foto:</p>
 
-                <img
-                  src={getImageUrl(form.image)}
-                  alt="Preview"
-                  className="w-full max-h-64 sm:max-h-80 object-cover rounded-xl border"
-                />
+              <img
+                src={getImageUrl(form.image)}
+                alt="Preview"
+                className="w-full max-h-80 object-cover rounded-xl border"
+              />
 
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm((prev) => ({
-                      ...prev,
-                      image: "",
-                      image_file: null,
-                    }))
-                  }
-                  className="mt-3 w-full sm:w-auto bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300"
-                >
-                  Hiq foton
-                </button>
-              </div>
-            )}
-          </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    image: "",
+                    image_file: null,
+                  }))
+                }
+                className="mt-3 bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300"
+              >
+                Hiq foton
+              </button>
+            </div>
+          )}
+        </div>
 
-          <div className="md:col-span-2">
-            <label className="font-bold">Përshkrimi</label>
-            <textarea
-              name="description"
-              className="w-full border px-4 py-3 rounded-lg mt-2 h-32 resize-none"
-              value={form.description}
-              onChange={handleChange}
-            />
-          </div>
+        <div className="md:col-span-2">
+          <label className="font-bold">Përshkrimi</label>
+          <textarea
+            name="description"
+            className="w-full border px-4 py-3 rounded-lg mt-2 h-32"
+            value={form.description}
+            onChange={handleChange}
+          />
+        </div>
 
-          <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              disabled={loading}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-700 disabled:opacity-60"
-            >
-              {loading ? "Duke ruajtur..." : "Ruaj pjesën"}
-            </button>
+        <div className="md:col-span-2 flex gap-3">
+          <button
+            disabled={loading}
+            className="bg-red-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-red-700 disabled:opacity-60"
+          >
+            {loading ? "Duke ruajtur..." : "Ruaj pjesën"}
+          </button>
 
-            <button
-              type="button"
-              onClick={() => navigate("/admin/products")}
-              className="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800"
-            >
-              Anulo
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/admin/products")}
+            className="bg-black text-white px-6 py-3 rounded-lg font-bold hover:bg-gray-800"
+          >
+            Anulo
+          </button>
         </div>
       </form>
     </AdminLayout>
@@ -384,4 +458,3 @@ function AdminProductForm() {
 }
 
 export default AdminProductForm;
-
