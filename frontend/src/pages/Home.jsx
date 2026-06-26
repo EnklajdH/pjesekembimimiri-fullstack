@@ -86,18 +86,17 @@ function Home() {
             <option>A-Class W169</option>
             <option>B-Class W245</option>
             <option>B-Class W246</option>
+            <option>C-Class W202</option>
             <option>C-Class W203</option>
             <option>C-Class W204</option>
             <option>C-Class W205</option>
+            <option>E-Class W210</option>
             <option>E-Class W211</option>
             <option>E-Class W212</option>
             <option>E-Class W213</option>
-            <option>CLK W209</option>
             <option>CLS W219</option>
-            <option>CLS W218</option>
             <option>ML W163</option>
             <option>ML W164</option>
-            <option>ML W166</option>
             <option>GLK X204</option>
           </select>
 

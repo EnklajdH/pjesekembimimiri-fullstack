@@ -86,6 +86,33 @@ function Contact() {
             </a>
 
             <a
+              href="https://www.instagram.com/pjese.kembimi.miri/?hl=en"
+              target="_blank"
+              rel="noreferrer"
+              className="text-red-600 font-semibold hover:underline"
+            >
+              Instagram
+            </a>
+
+            <a
+              href="https://www.facebook.com/servis.miri.5/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-red-600 font-semibold hover:underline"
+            >
+              Facebook
+            </a>
+
+            <a
+              href="https://www.tiktok.com/@pjesekembimimiri"
+              target="_blank"
+              rel="noreferrer"
+              className="text-red-600 font-semibold hover:underline"
+            >
+              TikTok
+            </a>
+
+            <a
               href="mailto:pjesekembimimiri@gmail.com"
               className="flex items-center justify-center bg-black text-white text-center py-4 rounded-lg font-bold hover:bg-gray-800"
             >
