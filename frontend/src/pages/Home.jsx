@@ -67,7 +67,7 @@ function Home() {
             <img
               src="/logomiri.jpeg"
               alt="Mercedes Parts Logo"
-              className="rounded-2xl w-full h-[260px] sm:h-[340px] md:h-[420px] object-contain"
+              className="rounded-2xl w-full h-auto max-h-[420px] object-contain"
             />
           </div>
         </div>
