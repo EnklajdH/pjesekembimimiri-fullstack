@@ -64,8 +64,8 @@ function Home() {
 
           <div className="bg-black/40 rounded-3xl p-3 sm:p-5 md:p-6 shadow-2xl">
             <img
-              src="https://mbspecialist.com/media/u2zhfx55/setratiosize800800-goerloese-autoimport-mercedes-reservedelslager-6.jpg?width=1050&height=699&mode=max"
-              alt="Mercedes parts"
+              src="/logomiri.jpeg"
+              alt="Mercedes Parts Logo"
               className="rounded-2xl w-full h-[260px] sm:h-[340px] md:h-[420px] object-cover"
             />
           </div>
