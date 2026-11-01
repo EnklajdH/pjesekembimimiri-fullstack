@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MessageCircle, ShieldCheck, Truck } from "lucide-react";
-import logoImg from '../logomiri.jpeg';
+
 
 import ProductCard from "../components/ProductCard";
 import api from "../api/axios";
@@ -65,7 +65,7 @@ function Home() {
 
           <div className="bg-black/40 rounded-3xl p-3 sm:p-5 md:p-6 shadow-2xl">
             <img
-              src={logoImg}
+              src="/logomiri.jpeg"
               alt="Mercedes Parts Logo"
               className="rounded-2xl w-full h-[260px] sm:h-[340px] md:h-[420px] object-cover"
             />
